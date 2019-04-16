@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' show get;
+import 'models/image_model.dart';
 
 class App extends StatefulWidget {
   @override
@@ -6,11 +10,15 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  int _imagesShown = 0;
+  int _imagesCounter = 0;
+  List<ImageModel> _images = [];
 
-  void incrementImagesShown() {
+  void fetchImage() async {
+    _imagesCounter++;
+    var response = await get('http://jsonplaceholder.typicode.com/photos/$_imagesCounter');
+    var imageModel = ImageModel.fromJson(json.decode(response.body));
     setState(() {
-      _imagesShown += 1;
+      _images.add(imageModel);
     });
   }
 
@@ -22,13 +30,11 @@ class _AppState extends State<App> {
           title: Text('Lets see some images'),
         ),
         body: Text(
-          '$_imagesShown Images',
+          '$_imagesCounter Images',
           textAlign: TextAlign.center,
           ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            incrementImagesShown();
-          },
+          onPressed: fetchImage,
           child: Icon(Icons.add),
         ),
       ),
