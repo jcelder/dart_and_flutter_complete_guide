@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import '../mixins/validation_mixin.dart';
 
 class LoginScreen extends StatefulWidget{
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with ValidationMixin {
   final _formKey = GlobalKey<FormState>();
   String email = '';
   String password = '';
@@ -33,12 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
         hintText: 'you@example.com'
       ),
       keyboardType: TextInputType.emailAddress,
-      validator: (String value) {
-        bool isValid = value.contains(new RegExp('.+@.+'));
-        // return null if valid
-        // otherwise string with the error message if invalid
-        return isValid ? null : 'Invalid Email Address';
-      },
+      validator: validateEmail,
       onSaved: (String value) {
         email = value;
       },
@@ -52,10 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
         hintText: 'Password',
       ),
       obscureText: true,
-      validator: (String value) {
-        bool isValid = value.length >= 8;
-        return isValid ? null : 'Invalid Password';
-      },
+      validator: validatePassword,
       onSaved: (String value) {
         password = value;
       }
